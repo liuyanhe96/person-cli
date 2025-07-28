@@ -1,5 +1,7 @@
 import { input, select } from '@inquirer/prompts';
 import { clone } from '../utils/clone';
+import * as path from 'path';
+import fs from 'fs-extra';
 
 // 然后我们就需要让用户选择我们的预设模板，在src/command/create.ts中添加模板信息，定义成map的形式是方便我们根据key获取项目的信息。
 // 下载模板的方式有很多种，可以将模板文件保存在 SDK 中，使用 cjs 或者其他方法动态选择生成，使用 fs 模块写入，或者存放在 git 仓库中进行 clone，我们这里把代码放到gitee中的代码仓库中
@@ -30,6 +32,23 @@ export const templates: Map<string, TemplateInfo> = new Map(
     ]
 )
 
+export const isOverWrite =  (projectName: string) => {
+    console.warn(`目标目录${projectName}已存在`)
+    return  select({
+        message: '项目已存在，是否覆盖？',
+        choices: [
+            {
+                name: '覆盖',
+                value: true
+            },
+            {
+                name: '取消',
+                value: false
+            }
+        ]
+    })
+}
+
 export async function create(projectName: string) {
     // 初始化模版列表
     const templateList = Array.from(templates).map((item: [string, TemplateInfo]) => {
@@ -52,6 +71,18 @@ export async function create(projectName: string) {
         projectName = await input({
             message: '请输入项目名称',
         })
+    }
+
+    // 如果文件夹存在，提示是否覆盖
+    const filePath = path.resolve(process.cwd(), projectName)
+    if (fs.existsSync(filePath)) { // 判断目标文件夹是否已存在
+        const run = await isOverWrite(projectName)
+        if (run) {
+            await fs.remove(filePath)
+        } else {
+            return; // 不覆盖直接返回
+        }
+
     }
 
     const templateName = await select({
