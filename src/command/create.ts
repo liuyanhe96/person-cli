@@ -1,4 +1,5 @@
 import { input, select } from '@inquirer/prompts';
+import { clone } from '../utils/clone';
 
 // 然后我们就需要让用户选择我们的预设模板，在src/command/create.ts中添加模板信息，定义成map的形式是方便我们根据key获取项目的信息。
 // 下载模板的方式有很多种，可以将模板文件保存在 SDK 中，使用 cjs 或者其他方法动态选择生成，使用 fs 模块写入，或者存放在 git 仓库中进行 clone，我们这里把代码放到gitee中的代码仓库中
@@ -66,6 +67,8 @@ export async function create(projectName: string) {
     // 通过node ./dist create测试功能
     const templateInfo = templates.get(templateName)
     console.log(templateInfo)
+
+    templateInfo && clone(templateInfo.downloadUrl, projectName, ['-b', templateInfo.branch])
 
     console.log('项目名称： ', projectName);
 
