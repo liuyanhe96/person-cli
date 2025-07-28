@@ -9,7 +9,7 @@ import { create } from './command/create';
 
 // 这里我们用 lyh 当作我的指令名称
 // 命令行中使用 lyh xxx 即可触发
-const program = new Command('lyh');
+const program = new Command('yanhe');
 // .version 表示可以使用 -v --version 参数查看当前SDK版本
 // 我们直接使用 package.json 中的 version 即可
 // 调用 version 的参数可以自定义
