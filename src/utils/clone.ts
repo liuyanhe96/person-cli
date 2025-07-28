@@ -60,3 +60,21 @@ export const clone = async (url: string, prjName: string, options: string[]): Pr
 // 使用场景:
 // 当不需要传递全部配置项时使用
 // 避免因缺少非必填属性导致的类型错误
+
+
+// 版本管理与发布
+//
+// 版本号组成:
+//     主版本号(第一个数字): 重大变更，API不兼容
+// 次版本号(中间数字): 新增功能，向下兼容
+// 修订号(最后数字): bug修复，小改动
+// 版本更新命令:
+// npm version patch: 修订号+1(如0.0.1→0.0.2)
+// npm version minor: 次版本号+1(如0.0.1→0.1.0)
+// npm version major: 主版本号+1(如0.0.1→1.0.0)
+// 发布流程:
+//     更新版本号
+// 执行npm publish重新发布
+// 卸载旧版本npm uninstall -g dawei-cli
+// 重新安装新版本npm install -g dawei-cli
+
