@@ -17,13 +17,13 @@ export const templates: Map<string, TemplateInfo> = new Map(
     [
         ["Vite4-Vue3-Typescript-template", {
             name: "admin-template",
-            downloadUrl: 'git@gitee.com:sohucw/admin-pro.git',
+            downloadUrl: 'https://gitee.com/sohucw/admin-pro.git',
             description: 'Vue3技术栈开发模板',
             branch: 'dev6'
         }],
         ["Vite4-temp", {
             name: "admin-template",
-            downloadUrl: 'git@gitee.com:sohucw/admin-pro.git',
+            downloadUrl: 'https://gitee.com/sohucw/admin-pro.git',
             description: 'Vue3技术栈开发模板',
             branch: 'dev10'
         }]
