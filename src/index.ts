@@ -5,6 +5,7 @@
 
 import { Command } from 'commander'; // 解决warning： tsconfig.json 中 打开设置 "moduleResolution": "node"
 import { version } from '../package.json'; // 解决warning： tsconfig.json 中 打开设置 是否可以直接引入json "resolveJsonModule": true,
+import { create } from './command/create';
 
 // 这里我们用 lyh 当作我的指令名称
 // 命令行中使用 lyh xxx 即可触发
@@ -14,6 +15,16 @@ const program = new Command('lyh');
 // 调用 version 的参数可以自定义
 // .version(version, '-v --version')
 program.version(version, '-v, --version');
+
+// command 为我们需要的命令名称。
+// description 为命令添加描述。
+// action 为指令触发执行的回调 dirName当前目录。
+// argument 为我们命令需要的参数，[]包裹代表可选，<>包裹代表必填。
+program.command('create').description('创建项目').argument('[name]', '项目名称').action(async (dirName) => {
+    // if(dirName) console.log(`create ${dirName}`)
+    // else console.log(`create command`)
+    create(dirName)
+})
 
 // parse 会解析 process.argv 中的内容
 // 也就是我们输入的指令
