@@ -1,4 +1,8 @@
-## 前言
+# yanhe-cli 😋
+![NPM 版本](https://img.shields.io/badge/yanhe-cli_v0.0.1-green)
+
+
+## 前言 😋
 开发的脚手架地址：
 dawei-cli [https://www.npmjs.com/package/dawei-cli](https://www.npmjs.com/package/dawei-cli)
 
