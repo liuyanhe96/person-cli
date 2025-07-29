@@ -6,6 +6,7 @@
 import { Command } from 'commander'; // 解决warning： tsconfig.json 中 打开设置 "moduleResolution": "node"
 import { version } from '../package.json'; // 解决warning： tsconfig.json 中 打开设置 是否可以直接引入json "resolveJsonModule": true,
 import { create } from './command/create';
+import { update } from './command/update';
 
 // 这里我们用 lyh 当作我的指令名称
 // 命令行中使用 lyh xxx 即可触发
@@ -15,6 +16,16 @@ const program = new Command('yanhe');
 // 调用 version 的参数可以自定义
 // .version(version, '-v --version')
 program.version(version, '-v, --version');
+
+
+program
+    .command('update')
+    .description('更新 yanhe 至最新版本')
+    .action(async () => {
+        console.log('update command')
+        await update()
+    });
+
 
 // command 为我们需要的命令名称。
 // description 为命令添加描述。
