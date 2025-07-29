@@ -2,6 +2,10 @@ import { input, select } from '@inquirer/prompts';
 import { clone } from '../utils/clone';
 import * as path from 'path';
 import fs from 'fs-extra';
+import { name, version } from '../../package.json';
+import axios, { AxiosResponse } from 'axios';
+import { gt } from 'lodash'
+import chalk from 'chalk';
 
 // 然后我们就需要让用户选择我们的预设模板，在src/command/create.ts中添加模板信息，定义成map的形式是方便我们根据key获取项目的信息。
 // 下载模板的方式有很多种，可以将模板文件保存在 SDK 中，使用 cjs 或者其他方法动态选择生成，使用 fs 模块写入，或者存放在 git 仓库中进行 clone，我们这里把代码放到gitee中的代码仓库中
@@ -49,6 +53,28 @@ export const isOverWrite =  (projectName: string) => {
     })
 }
 
+export const getNpmLastVersion = async (projectName: string) => {
+    const npmURL = `https://registry.npmjs.org/${projectName}`;
+    let res
+    try {
+        res = await axios.get(npmURL) as AxiosResponse
+    } catch (error) {
+        console.error(error)
+    }
+    return res!.data['dist-tags'].latest
+}
+
+export const checkVersion = async (projectName: string, version: string) => {
+    // 1. 调用npm api获取远端最新版本
+    const latestVersion = await getNpmLastVersion(projectName)
+    const isNeed = gt(latestVersion, version)
+    if (isNeed) {
+        console.warn(`当前版本: ${chalk.blackBright(version)},低于最新版本: ${chalk.blackBright(latestVersion)}, 请更新到最新版本`)
+        console.log(`可使用：${chalk.yellow(`npm install yanhe-cli@latest`)} 或者 ${chalk.yellow(`yanhe update`)} 更新！`)
+    }
+    return isNeed
+}
+
 export async function create(projectName: string) {
     // 初始化模版列表
     const templateList = Array.from(templates).map((item: [string, TemplateInfo]) => {
@@ -82,8 +108,11 @@ export async function create(projectName: string) {
         } else {
             return; // 不覆盖直接返回
         }
-
     }
+
+    // 版本不一致场景：当本地安装的脚手架版本（如0.0.2）与npm官方最新版本（如0.0.3）不一致时，会导致用户无法使用最新功能。
+    // 解决方案：在执行create命令前增加版本校验逻辑，确保用户使用的是最新版本
+    await checkVersion(name, version)
 
     const templateName = await select({
         message: '请选择模板',
