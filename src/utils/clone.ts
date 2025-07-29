@@ -1,6 +1,9 @@
 import simpleGit, { SimpleGitOptions } from 'simple-git';
 import createLogger from 'progress-estimator';
 import chalk from 'chalk';
+import log from './log';
+
+const figlet = require('figlet'); // 在控制台打印ASCII艺术字
 
 // 定义克隆方法
 // 方法参数:
@@ -32,13 +35,18 @@ const logger = createLogger({ // 初始化进度条
     }
 })
 
-export const clone = async (url: string, prjName: string, options: string[]): Promise<any>  => {
+const goodPrinter = async (msg?: string) => {
+    const data = await figlet(msg || 'yanhe-cli')
+    console.log(chalk.rgb(40, 156, 193).visible(data))
+}
+
+export const clone = async (url: string, projectName: string, options: string[]): Promise<any>  => {
     const git = simpleGit(gitOptions)
 
     // 开始下载 拉取
     try {
         // 使用progress-estimator库 预估并显示git clone的进度 通过spinner显示动态效果
-        await logger(git.clone(url, prjName, options), '代码拉取中...', {
+        await logger(git.clone(url, projectName, options), '代码拉取中...', {
             estimate: 7000, // 预估时间
         })
         console.log() // 相当于换行空格
@@ -48,8 +56,16 @@ export const clone = async (url: string, prjName: string, options: string[]): Pr
         console.log(chalk.blueBright('============================================================'))
         console.log()
 
+        goodPrinter()
+
+        log.success(`项目创建成功 ${chalk.blueBright(projectName)}`);
+        log.success(`执行以下命令启动项目: `);
+        log.info(`cd ${chalk.blueBright(projectName)}`);
+        log.info(`${chalk.yellow('pnpm')} install`);
+        log.info(`${chalk.yellow('pnpm')} run dev`);
+
     } catch (error) {
-        console.error(chalk.red('代码拉取失败'))
+        log.error(chalk.red('代码拉取失败'))
     }
 }
 
